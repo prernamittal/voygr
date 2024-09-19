@@ -13,10 +13,11 @@ const Itinerary = () => {
 
   return (
     <div className="container pt-4 pb-4">
-      <h1 className="text-center text-light mb-4">Generate Your Itinerary</h1>
+      <h1 className="text-left text-dark rounded px-2" style={{ maxWidth: '110px', backgroundColor:'#B2FBA5', fontFamily: 'fantasy' }}>Voygr</h1>
+      <h1 className="text-center text-light pb-4">Generate Your Itinerary</h1>
       <PreferenceForm setRecommendations={handlePreferencesUpdate} />
 
-      <div className="mt-4">
+      <div className="pt-4">
         {recommendations.length === 0 ? (
           <p className="text-light">No recommendations available. Please fill out the form to get suggestions.</p>
         ) : (

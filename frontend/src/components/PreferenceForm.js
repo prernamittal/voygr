@@ -126,7 +126,7 @@ const PreferenceForm = ({ setRecommendations }) => {
         </div>
 
         <button type="submit" className="btn" style={{ backgroundColor: '#B2FBA5', color: '#000' }}>
-          Get Recommendations
+          <b>Get Recommendations</b>
         </button>
       </form>
 
