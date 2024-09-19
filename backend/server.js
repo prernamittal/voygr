@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 
 const placeRoutes = require('./routes/placeRoutes');
 const itineraryRoutes = require('./routes/itineraryRoutes');
+const pdfRoutes = require('./routes/pdfRoutes'); 
 
 connectDB();  // Connect to MongoDB
 
@@ -15,6 +16,7 @@ app.use(express.json());  // Middleware to parse JSON requests
 // Routes
 app.use('/api/places', placeRoutes);
 app.use('/api/itinerary', itineraryRoutes);
+app.use('/api', pdfRoutes);  
 
 const PORT = process.env.PORT || 5000;
 

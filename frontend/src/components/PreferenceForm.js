@@ -7,7 +7,7 @@ const PreferenceForm = ({ setRecommendations }) => {
   const [activities, setActivities] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-
+  const [errorMessage, setErrorMessage] = useState('');  // Add error message state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,93 +15,132 @@ const PreferenceForm = ({ setRecommendations }) => {
     // Basic validation
     if (!budget || isNaN(parseInt(budget))) {
       console.error('Please provide a valid budget');
+      setErrorMessage('Please provide a valid budget');
       return;
     }
     if (!interests) {
       console.error('Please provide interests');
+      setErrorMessage('Please provide your interests');
       return;
     }
     if (!startDate || !endDate) {
       console.error('Please provide both start and end dates');
+      setErrorMessage('Please provide both start and end dates');
       return;
     }
+
+    // Split and trim interests, handle empty activities
+    const interestsArray = interests.split(',').map(item => item.trim());
+    const activitiesArray = activities
+      ? activities.split(',').map(item => item.trim()).filter(activity => activity !== "")
+      : [];  // Convert empty activities field into an empty array
 
     try {
       const response = await axios.post('http://localhost:5000/api/itinerary/generate', {
         budget: parseInt(budget),
-        interests: interests.split(',').map(item => item.trim()),  // Convert comma-separated values to an array
-        activities: activities.split(',').map(item => item.trim()),  // Same for activities
+        interests: interestsArray,  // Convert comma-separated values to an array
+        activities: activitiesArray,  // Ensure empty activities field is handled correctly
         startDate,
         endDate,
       });
-      setRecommendations(response.data);  // Update parent state with recommendations
+      
+      setRecommendations({
+        recommendations: response.data,  // Update parent state with recommendations
+        userPreferences: {
+          budget: parseInt(budget),
+          interests: interestsArray,
+          activities: activitiesArray,
+          startDate,
+          endDate,
+        }
+      });
+      setErrorMessage('');  // Clear error message if request is successful
     } catch (error) {
-      console.error("Error generating itinerary", error);
-      if (error.response && error.response.data) {
-        console.error('Backend error:', error.response.data.message);
+      if (error.response && error.response.status === 404) {
+        // Backend returned 404, no places found
+        setErrorMessage('No places found matching your preferences.');
+      } else {
+        setErrorMessage('An error occurred while fetching recommendations.');
       }
+      console.error("Error generating itinerary", error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={styles.form}>
-      <label>Budget:</label>
-      <input
-        type="number"
-        value={budget}
-        onChange={(e) => setBudget(e.target.value)}
-        required
-      />
+    <div>
+      <form onSubmit={handleSubmit} className="p-4 bg-dark text-light rounded shadow-lg" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="mb-3">
+          <label htmlFor="budget" className="form-label">Budget:</label>
+          <input
+            id="budget"
+            type="number"
+            className="form-control"
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            required
+          />
+        </div>
 
-      <label>Interests (comma-separated):</label>
-      <input
-        type="text"
-        value={interests}
-        onChange={(e) => setInterests(e.target.value)}
-        required
-      />
+        <div className="mb-3">
+          <label htmlFor="interests" className="form-label">Interests (comma-separated):</label>
+          <input
+            id="interests"
+            type="text"
+            className="form-control"
+            value={interests}
+            onChange={(e) => setInterests(e.target.value)}
+            required
+          />
+        </div>
 
-      <label>Activities (comma-separated):</label>
-      <input
-        type="text"
-        value={activities}
-        onChange={(e) => setActivities(e.target.value)}
-      />
+        <div className="mb-3">
+          <label htmlFor="activities" className="form-label">Activities (comma-separated):</label>
+          <input
+            id="activities"
+            type="text"
+            className="form-control"
+            value={activities}
+            onChange={(e) => setActivities(e.target.value)}
+          />
+        </div>
 
-      <label>Start Date:</label>
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        required
-      />
+        <div className="mb-3">
+          <label htmlFor="startDate" className="form-label">Start Date:</label>
+          <input
+            id="startDate"
+            type="date"
+            className="form-control"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+          />
+        </div>
 
-      <label>End Date:</label>
-      <input
-        type="date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        required
-      />
+        <div className="mb-3">
+          <label htmlFor="endDate" className="form-label">End Date:</label>
+          <input
+            id="endDate"
+            type="date"
+            className="form-control"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            required
+          />
+        </div>
 
-      <button type="submit">Get Recommendations</button>
-    </form>
+        <button type="submit" className="btn" style={{ backgroundColor: '#B2FBA5', color: '#000' }}>
+          Get Recommendations
+        </button>
+      </form>
+
+      {/* Display error message if there is one */}
+      {errorMessage && (
+        <div className="alert alert-warning mt-4">
+          {errorMessage}
+        </div>
+      )}
+    </div>
   );
-};
-
-// Simple CSS styling for the form
-const styles = {
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    maxWidth: '400px',
-    margin: '0 auto',
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  },
 };
 
 export default PreferenceForm;

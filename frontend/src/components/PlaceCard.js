@@ -1,55 +1,67 @@
 import React, { useState } from 'react';
+import DownloadPDFButton from './GeneratePDF';
 
-const PlaceCard = ({ place }) => {
+const PlaceCard = ({ place, userStartDate, userEndDate, userPreferences }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  return (
-    <div style={styles.card}>
-      <div style={styles.header}>
-        <h2>{place.name}</h2>
-        <h3>{place.location.city}, {place.location.country}</h3>
-        <button onClick={() => setIsExpanded(!isExpanded)} style={styles.button}>
-          {isExpanded ? 'Hide Details' : 'Show Details'}
-        </button>
-      </div>
+  // Function to get suitable hotels based on backend logic
+  const getSuitableHotel = () => {
+    if (!place.hotels || place.hotels.length === 0) return null;
+    return place.recommendedHotel; // Assuming backend logic sends the recommended hotel
+  };
 
-      {isExpanded && (
-        <div style={styles.description}>
-          <p>{place.description}</p>
-          <p>Activities: {place.activities.join(', ')}</p>
-          <p>Best Time to Visit: {place.preferredMonths.join(', ')}</p>
-          <p>Average Cost: {place.averageCost}</p>
+  // Constructing the preferences object to pass to DownloadPDFButton
+  const preferences = {
+    places: [place],  // Assuming place is a single place; wrap it in an array
+    userPreferences: {
+      budget: userPreferences.budget,  // Use the dynamic budget
+      interests: userPreferences.interests,  // Use the dynamic interests
+      activities: place.activities,
+      startDate: userStartDate,
+      endDate: userEndDate,
+    }
+  };
+
+  // Rendering the relevant place information and hotel details
+  return (
+    <div className="card mb-4" style={{ backgroundColor: '#B2FBA5', borderRadius: '10px', border: 'none', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)' }}>
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-center">
+          <div>
+            <h2 className="card-title">{place.location.city}, {place.location.country}</h2>
+          </div>
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)} 
+            className="btn btn-dark"
+          >
+            {isExpanded ? 'Hide Details' : 'Show Details'}
+          </button>
         </div>
-      )}
+
+        {isExpanded && (
+          <div className="mt-3">
+            <p><strong>Description:</strong> {place.description}</p>
+            <p><strong>Average Cost:</strong> ${place.averageCost}</p>
+            <p><strong>Activities:</strong> {place.activities.join(', ')}</p>
+
+            <p><strong>Trip Duration:</strong> {userStartDate} to {userEndDate}</p>
+
+            <h4>Recommended Hotel:</h4>
+            {getSuitableHotel() ? (
+              <div>
+                <p><strong>Hotel Name:</strong> {getSuitableHotel().name}</p>
+                <p><strong>Cost Per Night:</strong> ${getSuitableHotel().costPerNight}</p>
+                <p><strong>Rating:</strong> {getSuitableHotel().rating} stars</p>
+              </div>
+            ) : (
+              <p>No suitable hotels found.</p>
+            )}
+            <DownloadPDFButton preferences={preferences} />
+          </div>
+        )}
+      </div>
     </div>
   );
-};
-
-// Styling for the card
-const styles = {
-  card: {
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    padding: '15px',
-    marginBottom: '10px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  button: {
-    background: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    padding: '5px 10px',
-    cursor: 'pointer',
-  },
-  description: {
-    marginTop: '10px',
-  },
 };
 
 export default PlaceCard;
