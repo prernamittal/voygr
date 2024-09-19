@@ -7,12 +7,11 @@ const PreferenceForm = ({ setRecommendations }) => {
   const [activities, setActivities] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');  // Add error message state
+  const [errorMessage, setErrorMessage] = useState('');  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
     if (!budget || isNaN(parseInt(budget))) {
       console.error('Please provide a valid budget');
       setErrorMessage('Please provide a valid budget');
@@ -29,17 +28,16 @@ const PreferenceForm = ({ setRecommendations }) => {
       return;
     }
 
-    // Split and trim interests, handle empty activities
     const interestsArray = interests.split(',').map(item => item.trim());
     const activitiesArray = activities
       ? activities.split(',').map(item => item.trim()).filter(activity => activity !== "")
       : [];  // Convert empty activities field into an empty array
 
     try {
-      const response = await axios.post('http://localhost:5000/api/itinerary/generate', {
+      const response = await axios.post('https://travel-backend-dtty.onrender.com/api/itinerary/generate', {
         budget: parseInt(budget),
-        interests: interestsArray,  // Convert comma-separated values to an array
-        activities: activitiesArray,  // Ensure empty activities field is handled correctly
+        interests: interestsArray,  
+        activities: activitiesArray,  
         startDate,
         endDate,
       });
@@ -57,7 +55,6 @@ const PreferenceForm = ({ setRecommendations }) => {
       setErrorMessage('');  // Clear error message if request is successful
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        // Backend returned 404, no places found
         setErrorMessage('No places found matching your preferences.');
       } else {
         setErrorMessage('An error occurred while fetching recommendations.');

@@ -4,25 +4,22 @@ import DownloadPDFButton from './GeneratePDF';
 const PlaceCard = ({ place, userStartDate, userEndDate, userPreferences }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Function to get suitable hotels based on backend logic
   const getSuitableHotel = () => {
     if (!place.hotels || place.hotels.length === 0) return null;
-    return place.recommendedHotel; // Assuming backend logic sends the recommended hotel
+    return place.recommendedHotel; 
   };
 
-  // Constructing the preferences object to pass to DownloadPDFButton
   const preferences = {
-    places: [place],  // Assuming place is a single place; wrap it in an array
+    places: [place],  
     userPreferences: {
-      budget: userPreferences.budget,  // Use the dynamic budget
-      interests: userPreferences.interests,  // Use the dynamic interests
+      budget: userPreferences.budget,  
+      interests: userPreferences.interests,  
       activities: place.activities,
       startDate: userStartDate,
       endDate: userEndDate,
     }
   };
 
-  // Rendering the relevant place information and hotel details
   return (
     <div className="card mb-4" style={{ backgroundColor: '#B2FBA5', borderRadius: '10px', border: 'none', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)' }}>
       <div className="card-body">

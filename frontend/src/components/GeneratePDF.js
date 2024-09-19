@@ -4,18 +4,17 @@ import axios from 'axios';
 const DownloadPDFButton = ({ preferences }) => {
     const handleDownload = async () => {
         try {
-            // Ensure `preferences` contains `places` and `userPreferences`
             if (!preferences || !preferences.places || !preferences.userPreferences) {
                 throw new Error('Invalid preferences data');
             }
             
             const response = await axios.post(
-                'http://localhost:5000/api/generate-pdf',
+                'https://travel-backend-dtty.onrender.com/api/generate-pdf',
                 preferences,
                 {
                     responseType: 'blob',
                     headers: {
-                        'Content-Type': 'application/json',  // Ensure correct content type
+                        'Content-Type': 'application/json',  
                     },
                 }
             );
@@ -40,7 +39,6 @@ const DownloadPDFButton = ({ preferences }) => {
     }
   };
 
-//   return <button onClick={handleDownload}>Download Itinerary as PDF</button>;
   return (
     <button 
         onClick={handleDownload} 
