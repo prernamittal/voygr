@@ -6,12 +6,14 @@ const placeRoutes = require('./routes/placeRoutes');
 const itineraryRoutes = require('./routes/itineraryRoutes');
 const pdfRoutes = require('./routes/pdfRoutes'); 
 
-connectDB();  // Connect to MongoDB
+connectDB();  
 
 const app = express();
 
-app.use(cors());  // Enable CORS
-app.use(express.json());  // Middleware to parse JSON requests
+app.use(cors({
+  allowedOrigins: ['https://github.com/prernamittal/voygr', 'http://github.com/prernamittal/voygr']
+}));  
+app.use(express.json());  
 
 // Routes
 app.use('/api/places', placeRoutes);
