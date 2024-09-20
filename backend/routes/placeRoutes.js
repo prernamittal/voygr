@@ -2,6 +2,20 @@ const express = require('express');
 const router = express.Router();
 const Place = require('../models/placeModel');
 
+// Fetch all unique interests and activities
+router.get('/interests-activities', async (req, res) => {
+  try {
+    const interests = await Place.distinct('category');
+    const activities = await Place.distinct('activities');
+
+    res.json({ interests, activities });
+  } catch (error) {
+    console.error('Error fetching interests and activities:', error);
+    res.status(500).json({ message: 'Error fetching interests and activities.' });
+  }
+});
+
+
 // Create a new place
 router.post('/', async (req, res) => {
     try {
