@@ -14,7 +14,7 @@ const PreferenceForm = ({ setRecommendations }) => {
   useEffect(() => {
     const fetchInterestsAndActivities = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/places/interests-activities');
+        const response = await axios.get('https://travel-backend-dtty.onrender.com/api/places/interests-activities');
         setInterests(response.data.interests);
         setActivities(response.data.activities);
       } catch (error) {
@@ -48,7 +48,7 @@ const PreferenceForm = ({ setRecommendations }) => {
 
     // Validation logic
     try {
-      const response = await axios.post('http://localhost:5000/api/itinerary/generate', {
+      const response = await axios.post('https://travel-backend-dtty.onrender.com/api/itinerary/generate', {
         budget: parseInt(budget),
         interests: selectedInterests,
         activities: selectedActivities,
