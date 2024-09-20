@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/voygr/static/css/main.79d19d76.css",
-    "main.js": "/voygr/static/js/main.713f2350.js",
+    "main.js": "/voygr/static/js/main.81bce315.js",
     "static/js/453.8ab44547.chunk.js": "/voygr/static/js/453.8ab44547.chunk.js",
     "index.html": "/voygr/index.html",
     "main.79d19d76.css.map": "/voygr/static/css/main.79d19d76.css.map",
-    "main.713f2350.js.map": "/voygr/static/js/main.713f2350.js.map",
+    "main.81bce315.js.map": "/voygr/static/js/main.81bce315.js.map",
     "453.8ab44547.chunk.js.map": "/voygr/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.79d19d76.css",
-    "static/js/main.713f2350.js"
+    "static/js/main.81bce315.js"
   ]
 }
